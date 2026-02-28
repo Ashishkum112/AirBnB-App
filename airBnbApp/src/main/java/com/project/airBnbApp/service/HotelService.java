@@ -1,6 +1,7 @@
 package com.project.airBnbApp.service;
 
 import com.project.airBnbApp.dto.HotelDto;
+import com.project.airBnbApp.dto.HotelInfoDto;
 import com.project.airBnbApp.entity.Hotel;
 
 public interface HotelService {
@@ -14,4 +15,6 @@ public interface HotelService {
     void deleteHotelByID(Long id);
 
     void activateHotel(Long hotelId);
+
+    HotelInfoDto getHotelInfoById(Long id);
 }
