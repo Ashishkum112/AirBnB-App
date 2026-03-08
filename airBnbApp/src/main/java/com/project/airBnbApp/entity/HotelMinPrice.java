@@ -22,6 +22,10 @@ public class HotelMinPrice {
     @Column(nullable = false)
     private LocalDate date;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "hotel_id",nullable = false)
+    private Hotel hotel;
+
     @Column(nullable = false,precision = 10,scale = 2)
     private BigDecimal price; //cheapest room price on a particular day
 
