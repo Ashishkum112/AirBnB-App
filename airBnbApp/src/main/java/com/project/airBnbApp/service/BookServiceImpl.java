@@ -6,10 +6,12 @@ import com.project.airBnbApp.dto.GuestDto;
 import com.project.airBnbApp.entity.*;
 import com.project.airBnbApp.entity.enums.BookingStatus;
 import com.project.airBnbApp.exception.ResourceNotFoundException;
+import com.project.airBnbApp.exception.UnAuthorisedException;
 import com.project.airBnbApp.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -100,6 +102,12 @@ public class BookServiceImpl implements BookingService {
         Booking booking = bookingRepository.findById(bookingId).orElseThrow(()->
                 new ResourceNotFoundException("Booking With Id not found" +bookingId));
 
+        User user = getCurrentUser();
+
+        if(!user.equals(booking.getUser()))
+        {
+            throw new UnAuthorisedException("Booking does not belong to this user with Id : " +user.getId());
+        }
 
         if (hasBookingExpired(booking))
         {
@@ -131,9 +139,7 @@ public class BookServiceImpl implements BookingService {
     }
 
     public User getCurrentUser(){
-        User user = new User();
-        user.setId(1L); // TODO: REMOVE DUMMY USER
-        return  user;
+        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     }
 
 
