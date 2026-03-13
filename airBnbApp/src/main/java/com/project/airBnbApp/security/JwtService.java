@@ -30,7 +30,7 @@ public class JwtService {
                 .claim("email",user.getEmail())
                 .claim("roles" , user.getRoles().toString())
                 .issuedAt(new Date())
-                .expiration(new Date(System.currentTimeMillis() + 1000*60*15))
+                .expiration(new Date(System.currentTimeMillis() + 1000*60*60))
                 .signWith(getSECRETKEY())
                 .compact();
     }
@@ -55,5 +55,4 @@ public class JwtService {
 
         return Long.valueOf(claims.getSubject());
     }
-
 }
