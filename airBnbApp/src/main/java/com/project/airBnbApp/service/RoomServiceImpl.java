@@ -41,7 +41,7 @@ public class RoomServiceImpl implements RoomService{
 
         if (!user.equals(hotel.getOwner()))
         {
-            throw new UnAuthorisedException("THis user doesnt own this hotel with id" +hotelId);
+            throw new UnAuthorisedException("This user doesn't own this hotel with id" +hotelId);
 
         }
 
@@ -80,7 +80,7 @@ public class RoomServiceImpl implements RoomService{
 
         if (!user.equals(hotel.getOwner()))
         {
-            throw new UnAuthorisedException("THis user doesnt own this hotel with id" +hotelId);
+            throw new UnAuthorisedException("This user doesn't own this hotel with id" +hotelId);
 
         }
 
@@ -101,7 +101,7 @@ public class RoomServiceImpl implements RoomService{
 
         if (!user.equals(room.getHotel().getOwner()))
         {
-            throw new UnAuthorisedException("THis user doesnt own this hotel with id" +roomId);
+            throw new UnAuthorisedException("This user doesn't own this hotel with id" +roomId);
 
         }
 
@@ -110,5 +110,36 @@ public class RoomServiceImpl implements RoomService{
 
         inventoryService.deleteAllInventories(room);
         roomRepository.deleteById(roomId);
+    }
+
+    @Override
+    @Transactional
+    public RoomDto updateRoomById(Long hotelId, Long roomId, RoomDto roomDto) {
+
+        log.info("Updating room by Id : {}" , roomId);
+        Hotel hotel = hotelRepository
+                .findById(hotelId)
+                .orElseThrow(() -> new ResourceNotFoundException("Hotel Not found with ID : " +hotelId));
+
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (!user.equals(hotel.getOwner()))
+        {
+            throw new UnAuthorisedException("This user doesn't own this hotel with id" +hotelId);
+        }
+
+        Room room = roomRepository.findById(roomId)
+                .orElseThrow(()-> new ResourceNotFoundException("Room not found with Id : " +roomId));
+
+
+
+        modelMapper.map(roomDto,room);
+        room.setId(roomId);
+
+//        TODO : if price or inventory is updated, then update the inventory for this room
+
+        room = roomRepository.save(room);
+
+        return modelMapper.map(room,RoomDto.class);
     }
 }

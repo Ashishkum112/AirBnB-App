@@ -76,7 +76,7 @@ public class HotelController {
     }
 
     @GetMapping("/{hotelId}/reports")
-    public ResponseEntity<HotelReportDto> getAllBookingsByHotelId(@PathVariable Long hotelId,
+    public ResponseEntity<HotelReportDto> getReport(@PathVariable Long hotelId,
                                                                   @RequestParam(required = false) LocalDate startDate,
                                                                   @RequestParam(required = false) LocalDate endDate
                                                                         )
@@ -87,6 +87,4 @@ public class HotelController {
 
         return ResponseEntity.ok(bookingService.getHotelReport(hotelId,startDate,endDate));
     }
-
-
 }
